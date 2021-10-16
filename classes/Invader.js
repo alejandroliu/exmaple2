@@ -8,11 +8,12 @@ class Invader extends Actor {
   static MAX_TYPES = 3;
   static X_OFF = 10;
   static Y_OFF = 40;
-  static CRASH = 1;
+  static FIRE_RATE = 6000;
 
   static xspeed = 0;
   static yspeed = 0;
   static sprite_set = 0;
+  static last_shot = 0;
 
   constructor(type, x,y) {
     super(x, y, Invader.WIDTH, Invader.HEIGHT);
@@ -39,6 +40,10 @@ class Invader extends Actor {
   score() {
     return CANVAS_HEIGHT - this.ypos;
   }
+  shoot() {
+    let b = new Bullet(this.xpos + Invader.WIDTH/2, this.ypos + Invader.HEIGHT, 1);
+    game_state.shooting(b);
+  }
 
   static setupAll() {
     let invaders = [];
@@ -50,6 +55,8 @@ class Invader extends Actor {
     }
     Invader.xspeed = Invader.MOVE_SPEED;
     Invader.yspeed = 0;
+
+    Invader.last_shot = millis();
     return invaders;
   }
   static drawAll(invaders) {
@@ -59,6 +66,8 @@ class Invader extends Actor {
     }
   }
   static moveAll(invaders) {
+    if (invaders.length == 0) return;
+
     // First we determine the direction we should move...
     for (let i = 0; i < invaders.length ; i++) {
       let d = invaders[i].checkSide();
@@ -72,15 +81,43 @@ class Invader extends Actor {
       }
     }
 
+    // Move aliens
     for (let i = 0; i < invaders.length ; i++) {
       invaders[i].move();
     }
+
+    let shoot_chance = (millis() - Invader.last_shot) / Invader.FIRE_RATE;
+    if (random() > shoot_chance) return;
+
+    Invader.last_shot = millis();
+
+    // Choose a possible shooter...
+    let lanes = [];
+    let i;
+    for (i = 0; i < invaders.length ; i++) {
+      let xpos = invaders[i].xpos;
+      let ypos = invaders[i].ypos;
+      if (lanes[xpos]) {
+        if (lanes[xpos][0] >= ypos) continue;
+      }
+      lanes[xpos] = [ ypos, i ];
+    }
+    let shooters = lanes.filter(function (x) { return x !== undefined && x != null; });
+    //console.log("Shooter candidates: " + shooters.length)
+    //for (i = 0; i < shooters.length ; i++) {
+      //console.log(shooters[i]);
+    //}
+    i = shooters[int(random(shooters.length))][1];
+    // console.log("Selected: "+i);
+    //i = shooters[random(shooters.length)][1];
+    //
+    invaders[i].shoot();
   }
   static collideAll(invaders, player) {
     // First we determine the direction we should move...
     for (let i = 0; i < invaders.length ; i++) {
       if (invaders[i].ypos > CANVAS_HEIGHT - Invader.HEIGHT || invaders[i].isCrash(player)) {
-        game_state.dying(Invader.CRASH);
+        game_state.dying(INVADER_CRASH);
       }
       let bullets = player.bullets;
       for (let b = 0; b < bullets.length ; b++) {

@@ -10,7 +10,7 @@ class TitleScreen extends BasicScreen {
     textSize(TitleScreen.TEXT_SIZE);
     textAlign(CENTER);
     fill('yellow');
-    text("Hi-Score: " + hi_score, CANVAS_WIDTH/2, TitleScreen.TEXT_SIZE );
+    text("Hi-Score: " + hi_score.toLocaleString(), CANVAS_WIDTH/2, TitleScreen.TEXT_SIZE );
     fill('red');
     text(this.text, CANVAS_WIDTH/2, (CANVAS_HEIGHT - TitleScreen.TEXT_SIZE)/2 );
   }

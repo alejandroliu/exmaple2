@@ -36,4 +36,11 @@ class Player extends Actor {
       this.bullets.push(b);
     }
   }
+  takeBullets(bullets) {
+    for (let b = 0; b < bullets.length ; b++) {
+      if (!this.isCrash(bullets[b])) continue;
+      bullets.splice(b,1); b--;
+      game_state.dying(BULLET_HIT);
+    }
+  }
 }

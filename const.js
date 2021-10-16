@@ -2,4 +2,5 @@
 const CANVAS_HEIGHT = 640;
 const CANVAS_WIDTH = 480;
 
-
+const INVADER_CRASH = 1;
+const BULLET_HIT = 2;

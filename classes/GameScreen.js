@@ -10,17 +10,49 @@ class GameScreen extends BasicScreen {
     this.player = new Player();
     this.invaders = Invader.setupAll();
     this.booms = [];
+    this.bullets = [];
     this.ending = GameScreen.PLAYING;
     this.score = 0;
     this.lives = 3;
   }
+  restart() {
+    this.player = new Player();
+    this.invaders = Invader.setupAll();
+    this.booms = [];
+    this.bullets = [];
+    this.ending = GameScreen.PLAYING;
+  }
   move() {
     this.player.move();
     Invader.moveAll(this.invaders);
+    Bullet.moveAll(this.bullets);
     this.collide();
   }
   collide() {
     Invader.collideAll(this.invaders, this.player);
+    this.player.takeBullets(this.bullets);
+  }
+  shooting(b) {
+    this.bullets.push(b);
+  }
+  checkEnding() {
+    switch (this.ending) {
+    case GameScreen.WINNING:
+      this.restart();
+      break;
+    case GameScreen.DYING:
+      if (this.lives == 0) {
+        let hiscore_msg = "";
+        if (this.score > hi_score) {
+          hiscore_msg = "\nNew Record!\n"
+          hi_score = this.score;
+        }
+        game_state = new TitleScreen("GAME OVER\n"+hiscore_msg+"\nYour Score: " + this.score.toLocaleString() + "\n\nPress SPACE to Play Again!");
+      } else {
+        this.ending = GameScreen.PLAYING;
+      }
+      break;
+    }
   }
   draw() {
     background('black');
@@ -28,39 +60,22 @@ class GameScreen extends BasicScreen {
     fill('red');
     textSize(GameScreen.TEXT_SIZE)
     textAlign(LEFT);
-    text("Score: " + this.score, 0, GameScreen.TEXT_SIZE);
+    text("Score: " + this.score.toLocaleString() , 0, GameScreen.TEXT_SIZE);
+    textAlign(CENTER);
+    text("Hi-Score: " + hi_score.toLocaleString(), CANVAS_WIDTH/2, GameScreen.TEXT_SIZE);
     textAlign(RIGHT);
     text("Lives: " + this.lives, CANVAS_WIDTH, GameScreen.TEXT_SIZE);
     
     this.player.draw();
     Invader.drawAll(this.invaders);
+    Bullet.drawAll(this.bullets);
     if (this.booms.length > 0) {
       Boom.drawAll(this.booms);
       if (this.booms.length == 0) {
         // We spliced the last explosion...
-        switch (this.ending) {
-        case GameScreen.WINNING:
-          this.restart();
-          break;
-        case GameScreen.DYING:
-          if (this.lives == 0) {
-            if (this.score > hi_score) {
-              hiscore_msg = "\nNew Record!\n"
-            } else {
-              hiscore_msg = "";
-            }
-            game_state = new TitleScreen("GAME OVER\n"+hiscore_msg+"\nYour Score: " + this.score + "\n\nPress SPACE to Play Again!");
-          } else {
-            this.ending = GameScreen.PLAYING;
-          }
-          break;
-        }
+        this.checkEnding();
       }
     }
-  }
-  restart() {
-    this.invaders = Invader.setupAll();
-    this.ending = GameScreen.PLAYING;
   }
   keyPressed(key) {
     if (this.ending != GameScreen.PLAYING) return;
@@ -101,10 +116,11 @@ class GameScreen extends BasicScreen {
     this.ending = GameScreen.DYING;
     this.boom(player.xpos, player.ypos, player.width, player.height);
     this.xspeed = 0;
-    if (why == Invader.CRASH) {
+    if (why == INVADER_CRASH) {
       this.lives = 0; // This is an insta game over
     } else {
       this.lives--;
+      if (this.lives < 0) this.lives = 0;
     }
   }
 }

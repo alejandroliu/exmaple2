@@ -47,7 +47,7 @@ class GameScreen extends BasicScreen {
           hiscore_msg = "\nNew Record!\n"
           hi_score = this.score;
         }
-        game_state = new TitleScreen("GAME OVER\n"+hiscore_msg+"\nYour Score: " + this.score.toLocaleString() + "\n\nPress SPACE to Play Again!");
+        game_state = new TitleScreen("GAME OVER\n"+hiscore_msg+"\nYour Score: " + this.score.toLocaleString() + "\n");
       } else {
         this.ending = GameScreen.PLAYING;
       }

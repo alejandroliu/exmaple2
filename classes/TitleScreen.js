@@ -12,11 +12,11 @@ class TitleScreen extends BasicScreen {
     fill('yellow');
     text("Hi-Score: " + hi_score.toLocaleString(), CANVAS_WIDTH/2, TitleScreen.TEXT_SIZE );
     fill('red');
-    text(this.text, CANVAS_WIDTH/2, (CANVAS_HEIGHT - TitleScreen.TEXT_SIZE)/2 );
+    text(this.text + "\nPress ENTER to play", CANVAS_WIDTH/2, (CANVAS_HEIGHT - TitleScreen.TEXT_SIZE)/2 );
   }
   keyPressed(key) {
     switch(key) {
-    case KEY_SPACE:
+    case KEY_ENTER:
       game_state = new GameScreen();
     }
   }

@@ -5,7 +5,7 @@ function preload() {
 
 function setup() {
   createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-  game_state = new TitleScreen("Welcome\nPress SPACE to play");
+  game_state = new TitleScreen("Welcome");
 }
 
 function draw() {

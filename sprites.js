@@ -1,8 +1,10 @@
-
+// Indeces within the rect array
 const SPR_X = 0;
 const SPR_Y = 1;
 const SPR_W = 2;
 const SPR_H = 3;
+
+// Different sprites definitions
 const SPR_PLAYER = [ 4, 4, 60, 60 ];
 const SPR_UFO = [ 15, 80, 121, 57 ];
 const SPR_ALIENS_A = [

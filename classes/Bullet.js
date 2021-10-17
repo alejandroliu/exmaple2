@@ -16,12 +16,6 @@ class Bullet extends Actor {
     fill('yellow');
     rect(this.xpos, this.ypos, this.width, this.height);
   }
-  isOffScreen() {
-    if (this.ypos < 0 || this.ypos > CANVAS_HEIGHT) {
-      return true;
-    }
-    return false;
-  }
 
   static moveAll(bullets) {
     for (let i=0; i < bullets.length ; i++) {
